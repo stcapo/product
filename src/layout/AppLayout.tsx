@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout, ConfigProvider } from 'antd';
 import { TopBar } from './TopBar';
 import { SideNav } from './SideNav';
+import { TopNavLayout } from './TopNavLayout';
 import { VersionType } from '../types';
 import { themeV1, themeV2 } from '../styles/themes';
 
@@ -13,11 +14,22 @@ interface AppLayoutProps {
 
 export const AppLayout: React.FC<AppLayoutProps> = ({ version, onVersionChange, children }) => {
   const theme = version === 'v1' ? themeV1 : themeV2;
-  const themeClass = version === 'v1' ? 'theme-v1' : 'theme-v2';
 
+  // V2 使用全新的顶部导航布局
+  if (version === 'v2') {
+    return (
+      <ConfigProvider theme={theme}>
+        <TopNavLayout version={version} onVersionChange={onVersionChange}>
+          {children}
+        </TopNavLayout>
+      </ConfigProvider>
+    );
+  }
+
+  // V1 保持原有侧边栏布局
   return (
     <ConfigProvider theme={theme}>
-      <Layout style={{ minHeight: '100vh' }} className={themeClass}>
+      <Layout style={{ minHeight: '100vh' }} className="theme-v1">
         <TopBar version={version} onVersionChange={onVersionChange} />
         <Layout style={{ marginTop: 64 }}>
           <SideNav />

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Table, message } from 'antd';
 import { FilterBar } from '../components/common/FilterBar';
+import { CompactFilter } from '../components/common/CompactFilter';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
 import { GlassCard } from '../components/cards/GlassCard';
-import { PaperCard } from '../components/cards/PaperCard';
+import { ModernCard } from '../components/cards/ModernCard';
 import { StackedBarChart } from '../components/charts/v2/StackedBarChart';
 import { GrowthRankChart } from '../components/charts/v2/GrowthRankChart';
 import { useFilters } from '../hooks/useFilters';
@@ -40,8 +41,6 @@ export const CategoryInsights: React.FC<CategoryInsightsProps> = ({ version }) =
     loadData();
   }, [filters, version]);
 
-  const CardComponent = version === 'v1' ? GlassCard : PaperCard;
-
   if (loading || !categoryData) {
     return <LoadingSkeleton count={4} type="card" />;
   }
@@ -56,9 +55,66 @@ export const CategoryInsights: React.FC<CategoryInsightsProps> = ({ version }) =
     { title: '增长率', dataIndex: 'growthRate', key: 'growthRate', render: (text: number) => `${text}%` }
   ];
 
+  // V1 渲染
+  if (version === 'v1') {
+    return (
+      <div>
+        <FilterBar
+          filters={filters}
+          onDateRangeChange={updateDateRange}
+          onCategoriesChange={updateCategories}
+          onPaymentMethodsChange={updatePaymentMethods}
+          onGenderChange={updateGender}
+          onAgeGroupsChange={updateAgeGroups}
+          onClearFilters={clearFilters}
+          hasActiveFilters={hasActiveFilters()}
+        />
+
+        <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+          <Col xs={24} lg={12}>
+            <GlassCard>
+              <StackedBarChart data={categoryData.categoryTrends} title="品类趋势分析" seriesNames={categoryData.categoryTrends[0] ? Object.keys(categoryData.categoryTrends[0]).filter(k => k !== 'date') : []} />
+            </GlassCard>
+          </Col>
+          <Col xs={24} lg={12}>
+            <GlassCard>
+              <GrowthRankChart data={categoryData.categoryGrowth} title="品类增长排行" />
+            </GlassCard>
+          </Col>
+        </Row>
+
+        <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+          <Col xs={24} lg={12}>
+            <GlassCard>
+              <h3 style={{ marginBottom: 16 }}>品类客单价排行</h3>
+              <Table
+                dataSource={categoryData.categoryAov}
+                columns={aovColumns}
+                pagination={false}
+                rowKey="category"
+              />
+            </GlassCard>
+          </Col>
+          <Col xs={24} lg={12}>
+            <GlassCard>
+              <h3 style={{ marginBottom: 16 }}>品类增长排行</h3>
+              <Table
+                dataSource={categoryData.categoryGrowth}
+                columns={growthColumns}
+                pagination={false}
+                rowKey="category"
+              />
+            </GlassCard>
+          </Col>
+        </Row>
+      </div>
+    );
+  }
+
+  // V2 渲染
   return (
     <div>
-      <FilterBar
+      <CompactFilter
         filters={filters}
         onDateRangeChange={updateDateRange}
         onCategoriesChange={updateCategories}
@@ -69,44 +125,44 @@ export const CategoryInsights: React.FC<CategoryInsightsProps> = ({ version }) =
         hasActiveFilters={hasActiveFilters()}
       />
 
-      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-        <Col xs={24} lg={12}>
-          <CardComponent>
-            <StackedBarChart data={categoryData.categoryTrends} title="品类趋势分析" seriesNames={categoryData.categoryTrends[0] ? Object.keys(categoryData.categoryTrends[0]).filter(k => k !== 'date') : []} />
-          </CardComponent>
+      <Row gutter={[20, 20]} style={{ marginBottom: 24 }}>
+        <Col xs={24} lg={8}>
+          <ModernCard title="品类趋势分析" icon="📈" accentColor="#667eea">
+            <StackedBarChart data={categoryData.categoryTrends} title="" seriesNames={categoryData.categoryTrends[0] ? Object.keys(categoryData.categoryTrends[0]).filter(k => k !== 'date') : []} />
+          </ModernCard>
         </Col>
-        <Col xs={24} lg={12}>
-          <CardComponent>
-            <GrowthRankChart data={categoryData.categoryGrowth} title="品类增长排行" />
-          </CardComponent>
+        <Col xs={24} lg={8}>
+          <ModernCard title="品类增长排行" icon="🚀" accentColor="#f5576c">
+            <GrowthRankChart data={categoryData.categoryGrowth} title="" />
+          </ModernCard>
         </Col>
-      </Row>
-
-      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-        <Col xs={24} lg={12}>
-          <CardComponent>
-            <h3 style={{ marginBottom: 16 }}>品类客单价排行</h3>
+        <Col xs={24} lg={8}>
+          <ModernCard title="品类客单价排行" icon="💰" accentColor="#43e97b">
             <Table
               dataSource={categoryData.categoryAov}
               columns={aovColumns}
               pagination={false}
               rowKey="category"
+              size="small"
             />
-          </CardComponent>
+          </ModernCard>
         </Col>
-        <Col xs={24} lg={12}>
-          <CardComponent>
-            <h3 style={{ marginBottom: 16 }}>品类增长排行</h3>
+      </Row>
+
+      <Row gutter={[20, 20]}>
+        <Col xs={24}>
+          <ModernCard title="品类增长详情" icon="📊" accentColor="#4facfe">
             <Table
               dataSource={categoryData.categoryGrowth}
               columns={growthColumns}
               pagination={false}
               rowKey="category"
             />
-          </CardComponent>
+          </ModernCard>
         </Col>
       </Row>
     </div>
   );
 };
+
 
