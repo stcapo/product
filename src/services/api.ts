@@ -1,8 +1,10 @@
+/// <reference types="vite/client" />
 import { TransactionRow } from '../types';
 import { generateMockData } from './mockData';
 
 // Backend API URL - configurable via environment variable
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+// In production (Docker/Nginx), use relative path to allow reverse proxy
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:8000');
 
 let cachedData: TransactionRow[] | null = null;
 let useBackend = true;  // Flag to track if backend is available
@@ -44,11 +46,12 @@ export async function fetchTransactionData(): Promise<TransactionRow[]> {
           if (data && data.length > 0) {
             cachedData = data;
             console.log(`[API] Loaded ${data.length} transactions from backend`);
-            return cachedData;
+            return cachedData!;
           }
         }
       }
     } catch (error) {
+
       console.warn('[API] Backend unavailable, falling back to mock data:', error);
       useBackend = false;  // Disable backend for future requests
     }

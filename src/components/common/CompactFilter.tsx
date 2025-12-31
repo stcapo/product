@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, Select, DatePicker, Button, Dropdown, Space, Badge, Tag } from 'antd';
+import { Select, DatePicker, Button, Dropdown, Badge, Tag } from 'antd';
 import { FilterOutlined, ClearOutlined, DownOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { FilterState } from '../../types';

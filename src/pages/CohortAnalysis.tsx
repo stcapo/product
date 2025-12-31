@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Table, message, Progress, Statistic } from 'antd';
+import { Row, Col, Table, message } from 'antd';
 import { FilterBar } from '../components/common/FilterBar';
 import { CompactFilter } from '../components/common/CompactFilter';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';

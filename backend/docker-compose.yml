@@ -172,6 +172,22 @@ services:
       - ecommerce-network
     restart: unless-stopped
 
+  # ============================================
+  # Frontend - React Application (Nginx)
+  # ============================================
+  frontend:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: frontend
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+
 networks:
   ecommerce-network:
     driver: bridge
