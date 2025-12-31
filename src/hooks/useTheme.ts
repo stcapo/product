@@ -1,16 +1,10 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { VersionType } from '../types';
 
 export function useTheme() {
   const [version, setVersion] = useState<VersionType>('v1');
 
-  // Load version from localStorage on mount
-  useEffect(() => {
-    const savedVersion = localStorage.getItem('bi-version') as VersionType | null;
-    if (savedVersion && (savedVersion === 'v1' || savedVersion === 'v2')) {
-      setVersion(savedVersion);
-    }
-  }, []);
+  // Always use V1 (dark analysis version)
 
   const switchVersion = useCallback((newVersion: VersionType) => {
     setVersion(newVersion);
