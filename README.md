@@ -170,6 +170,75 @@ docker compose down -v  # 删除所有容器和数据卷
 
 ---
 
+## 📦 Docker 打包与迁移
+
+### 导出 Docker 镜像
+
+```bash
+cd backend
+
+# 保存所有自定义镜像到 tar 文件
+docker save backend-producer backend-spark-consumer backend-api \
+  -o ecommerce-images.tar
+
+# 压缩（可选，减小文件大小）
+gzip ecommerce-images.tar
+```
+
+### 导出数据卷（可选）
+
+```bash
+# 导出 MySQL 数据
+docker run --rm -v backend_mysql_data:/data -v $(pwd):/backup \
+  alpine tar czf /backup/mysql-data.tar.gz -C /data .
+
+# 导出 Redis 数据
+docker run --rm -v backend_redis_data:/data -v $(pwd):/backup \
+  alpine tar czf /backup/redis-data.tar.gz -C /data .
+```
+
+### 在新机器上导入
+
+```bash
+# 1. 复制项目文件到新机器
+scp -r backend/ user@newhost:/path/to/project/
+
+# 2. 复制镜像文件
+scp ecommerce-images.tar.gz user@newhost:/path/to/project/backend/
+
+# 3. 在新机器上导入镜像
+cd /path/to/project/backend
+gunzip ecommerce-images.tar.gz
+docker load -i ecommerce-images.tar
+
+# 4. 导入数据卷（如果有）
+docker volume create backend_mysql_data
+docker run --rm -v backend_mysql_data:/data -v $(pwd):/backup \
+  alpine tar xzf /backup/mysql-data.tar.gz -C /data
+
+# 5. 启动服务
+docker compose up -d
+```
+
+### 完整打包脚本
+
+```bash
+# 创建完整打包
+cd backend
+mkdir -p dist
+docker compose down
+docker save backend-producer backend-spark-consumer backend-api -o dist/images.tar
+cp -r ../scripts dist/
+cp docker-compose.yml dist/
+cp -r init dist/
+tar czf ecommerce-bi-backend.tar.gz dist/
+rm -rf dist/
+
+# 打包文件: ecommerce-bi-backend.tar.gz (~500MB)
+```
+
+---
+
 ## 🌐 浏览器兼容性
 
 - Chrome (最新版)
