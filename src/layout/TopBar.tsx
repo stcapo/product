@@ -34,7 +34,7 @@ export const TopBar: React.FC<TopBarProps> = ({ version, onVersionChange }) => {
       }}
     >
       <div style={{ fontSize: 18, fontWeight: 600 }}>
-        电商行为BI分析平台
+        电商零售数据分析的可视化大屏
       </div>
 
       <Space size="large">

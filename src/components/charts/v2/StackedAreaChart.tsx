@@ -3,13 +3,13 @@ import ReactECharts from 'echarts-for-react';
 import { CHART_COLORS_V2 } from '../../../constants';
 
 interface StackedAreaChartProps {
-  data: Array<{ date: string; [key: string]: any }>;
+  data: Array<{ date: string;[key: string]: any }>;
   title?: string;
   seriesNames?: string[];
 }
 
-export const StackedAreaChart: React.FC<StackedAreaChartProps> = ({ 
-  data, 
+export const StackedAreaChart: React.FC<StackedAreaChartProps> = ({
+  data,
   title = '新老用户堆叠面积图',
   seriesNames = ['新用户', '老用户']
 }) => {
@@ -49,7 +49,7 @@ export const StackedAreaChart: React.FC<StackedAreaChartProps> = ({
     },
     series: seriesNames.map((name, index) => ({
       name,
-      type: 'area',
+      type: 'line',
       stack: 'total',
       data: data.map(d => d[name === '新用户' ? 'new' : 'returning'] || 0),
       smooth: true,

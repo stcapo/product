@@ -47,7 +47,7 @@ export const AreaChart: React.FC<AreaChartProps> = ({ data, title = 'GMV增长�
     series: [
       {
         name: 'GMV',
-        type: 'area',
+        type: 'line',
         data: data.map(d => d.value),
         smooth: true,
         itemStyle: { color: CHART_COLORS_V2[0] },

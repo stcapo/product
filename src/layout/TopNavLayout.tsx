@@ -85,7 +85,7 @@ export const TopNavLayout: React.FC<TopNavLayoutProps> = ({ version, onVersionCh
                         color: '#fff',
                         letterSpacing: 1
                     }}>
-                        电商BI平台
+                        基于用户行为驱动的电商数据分析系统
                     </span>
                 </div>
 
